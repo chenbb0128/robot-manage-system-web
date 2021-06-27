@@ -33,17 +33,33 @@
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            编辑
+          </el-button>
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+            禁用
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="handleGetList" />
+    <UpdateAdminUserDialog
+        :update-admin-user-dialog-visible="updateAdminUserDialogVisible"
+        @hiddenUpdateAdminUserDialogVisible="hiddenUpdateAdminUserDialogVisible"
+        :admin-user="currentAdminUser"
+    ></UpdateAdminUserDialog>
   </div>
 </template>
 
 <script>
 import { getList } from '@/api/adminUser'
 import Pagination from '@/components/Pagination'
+import UpdateAdminUserDialog from './updateAdminUserDialog'
 
 export default {
-  components: { Pagination },
+  components: { Pagination, UpdateAdminUserDialog },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -65,6 +81,8 @@ export default {
         limit: 10,
         sort: '+id'
       },
+      currentAdminUser: {},
+      updateAdminUserDialogVisible: false
     }
   },
   created() {
@@ -80,6 +98,14 @@ export default {
         this.listLoading = false
       })
     },
+    handleUpdate(row) {
+      console.log(row)
+      this.currentAdminUser = row
+      this.updateAdminUserDialogVisible = true
+    },
+    hiddenUpdateAdminUserDialogVisible() {
+      this.updateAdminUserDialogVisible = false
+    }
   }
 }
 </script>

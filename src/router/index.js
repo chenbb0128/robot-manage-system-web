@@ -72,13 +72,18 @@ export const constantRoutes = [
     component: Layout,
     redirect: '/robot/reply',
     name: 'Reply',
-    meta: { title: '回复管理', icon: 'el-icon-s-help' },
+    meta: { title: '机器人管理', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'reply',
         name: 'Reply',
         component: () => import('@/views/reply/index'),
-        meta: { title: '回复管理', icon: 'table' }
+        meta: { title: '关键字回复', icon: 'table' }
+      }, {
+        path: 'crontab',
+        name: 'Crontab',
+        component: () => import('@/views/reply/index'),
+        meta: { title: '定时任务', icon: 'table' }
       }
     ]
   }, {
