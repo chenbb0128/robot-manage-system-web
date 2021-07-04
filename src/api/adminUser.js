@@ -24,10 +24,26 @@ export function logout() {
   })
 }
 
-export function getList(params) {
+export function getAdminUsers(params) {
   return request({
     url: '/adminUser',
     method: 'get',
     params
+  })
+}
+
+export function updateAdminUser(data) {
+  return request({
+    url: `/adminUser/${data.id}`,
+    method: 'put',
+    data
+  })
+}
+
+export function createAdminUser(data) {
+  return request({
+    url: '/adminUser',
+    method: 'post',
+    data
   })
 }

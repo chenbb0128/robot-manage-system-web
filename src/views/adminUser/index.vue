@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { getList } from '@/api/adminUser'
+import { getAdminUsers } from '@/api/adminUser'
 import Pagination from '@/components/Pagination'
 import UpdateAdminUserDialog from './updateAdminUserDialog'
 
@@ -91,7 +91,7 @@ export default {
   methods: {
     handleGetList() {
       this.listLoading = true
-      getList(this.listQuery).then(response => {
+      getAdminUsers(this.listQuery).then(response => {
         const data = response.data
         this.list = data.data
         this.total = data.total

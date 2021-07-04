@@ -4,7 +4,6 @@
       :visible.sync="visible"
       :destroy-on-close="true"
   >
-    {{adminUser.username}}
     <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
       <el-form-item label="用户名" prop="username">
         <el-input v-model="form.username" />
@@ -24,6 +23,8 @@
   </el-dialog>
 </template>
 <script>
+  import {updateAdminUser} from "@/api/adminUser";
+
   export default {
     props: {
       updateAdminUserDialogVisible: {
@@ -43,7 +44,9 @@
       }
     },
     watch: {
-
+      adminUser(val) {
+        this.form = val
+      },
     },
     created() {
     },
@@ -57,9 +60,19 @@
         }
       }
     },
+    updated() {
+      console.log('App.vue finish re-render')
+    },
     methods: {
       updateData() {
+        this.$refs['dataForm'].validate((valid) => {
+          if (valid) {
+            updateAdminUser(this.form).then(() => {
 
+            })
+          }
+        })
+        console.log(this.form)
       }
     }
   }
