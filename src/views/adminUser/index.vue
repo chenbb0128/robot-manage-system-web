@@ -25,7 +25,7 @@
       </el-table-column>
       <el-table-column class-name="status-col" label="Status" width="110" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          <el-tag :type="scope.row.status | statusFilter">{{ adminUserStatus[scope.row.status] }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="Display_time" width="200">
@@ -38,8 +38,11 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button v-if="row.status != 1" size="mini" type="danger" @click="handleStatus(row, )">
             禁用
+          </el-button>
+          <el-button v-else size="mini" type="success" @click="handleStatus(row, )">
+            启用
           </el-button>
         </template>
       </el-table-column>
@@ -49,6 +52,7 @@
         :update-admin-user-dialog-visible="updateAdminUserDialogVisible"
         @hiddenUpdateAdminUserDialogVisible="hiddenUpdateAdminUserDialogVisible"
         :admin-user="currentAdminUser"
+        @changeList="changeList"
     ></UpdateAdminUserDialog>
   </div>
 </template>
@@ -62,11 +66,7 @@ export default {
   components: { Pagination, UpdateAdminUserDialog },
   filters: {
     statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
+      const statusMap = ['success', 'danger']
       return statusMap[status]
     }
   },
@@ -82,7 +82,7 @@ export default {
         sort: '+id'
       },
       currentAdminUser: {},
-      updateAdminUserDialogVisible: false
+      updateAdminUserDialogVisible: false,
     }
   },
   created() {
@@ -105,6 +105,31 @@ export default {
     },
     hiddenUpdateAdminUserDialogVisible() {
       this.updateAdminUserDialogVisible = false
+    },
+    changeList(data, mode) {
+      if (mode === 'add') {
+        this.list.unshift(data)
+      } else {
+        const index = this.list.findIndex(v => v.id === data.id)
+        this.list.splice(index, 1, data)
+      }
+    },
+    handleStatus(row, status) {
+      this.$confirm('此操作将禁用该用户, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
     }
   }
 }

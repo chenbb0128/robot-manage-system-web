@@ -32,7 +32,8 @@
         default: false
       },
       hiddenUpdateAdminUserDialogVisible: Function,
-      adminUser: Object
+      adminUser: Object,
+      changeList: Function
     },
     data() {
       return {
@@ -67,8 +68,24 @@
       updateData() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            updateAdminUser(this.form).then(() => {
-
+            updateAdminUser(this.form).then((res) => {
+              console.log(res)
+              this.$notify({
+                title: 'Success',
+                message: res.data,
+                type: 'success',
+                duration: 2000
+              })
+              this.$emit('hiddenUpdateAdminUserDialogVisible')
+              this.$emit('changeList', this.form, 'update')
+            }).catch(() => {
+              this.$notify({
+                title: 'Error',
+                message: '操作错误，请联系管理员',
+                type: 'error',
+                duration: 2000
+              })
+              this.$emit('hiddenUpdateAdminUserDialogVisible')
             })
           }
         })
