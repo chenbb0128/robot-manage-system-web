@@ -69,7 +69,6 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             updateAdminUser(this.form).then((res) => {
-              console.log(res)
               this.$notify({
                 title: 'Success',
                 message: res.data,

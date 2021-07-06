@@ -18,14 +18,14 @@
           {{ scope.row.username }}
         </template>
       </el-table-column>
-      <el-table-column label="Email" width="110" align="center">
+      <el-table-column label="Email" width="250" align="center">
         <template slot-scope="scope">
           <span>{{ scope.row.email }}</span>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="Status" width="110" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ adminUserStatus[scope.row.status] }}</el-tag>
+          <el-tag :type="scope.row.status | statusFilter">{{ adminUserStatus.getName(scope.row.status) }}</el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="Display_time" width="200">
@@ -38,10 +38,10 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             编辑
           </el-button>
-          <el-button v-if="row.status != 1" size="mini" type="danger" @click="handleStatus(row, )">
+          <el-button v-if="row.status != adminUserStatus.DISABLED" size="mini" type="danger" @click="handleStatus(row, adminUserStatus.DISABLED)">
             禁用
           </el-button>
-          <el-button v-else size="mini" type="success" @click="handleStatus(row, )">
+          <el-button v-else size="mini" type="success" @click="handleStatus(row, adminUserStatus.ENABLED)">
             启用
           </el-button>
         </template>
@@ -58,16 +58,16 @@
 </template>
 
 <script>
-import { getAdminUsers } from '@/api/adminUser'
+  import {getAdminUsers, updateAdminUser} from '@/api/adminUser'
 import Pagination from '@/components/Pagination'
 import UpdateAdminUserDialog from './updateAdminUserDialog'
+import adminUserStatus from "@/constants/adminUserStatus";
 
 export default {
   components: { Pagination, UpdateAdminUserDialog },
   filters: {
     statusFilter(status) {
-      const statusMap = ['success', 'danger']
-      return statusMap[status]
+      return adminUserStatus.getButton(status)
     }
   },
   data() {
@@ -83,6 +83,7 @@ export default {
       },
       currentAdminUser: {},
       updateAdminUserDialogVisible: false,
+      adminUserStatus: adminUserStatus
     }
   },
   created() {
@@ -106,7 +107,7 @@ export default {
     hiddenUpdateAdminUserDialogVisible() {
       this.updateAdminUserDialogVisible = false
     },
-    changeList(data, mode) {
+    changeList(data, mode = 'update') {
       if (mode === 'add') {
         this.list.unshift(data)
       } else {
@@ -115,20 +116,27 @@ export default {
       }
     },
     handleStatus(row, status) {
-      this.$confirm('此操作将禁用该用户, 是否继续?', '提示', {
+      console.log(status)
+
+      this.$confirm(`此操作将${adminUserStatus.getName(status)}该用户, 是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$message({
-          type: 'success',
-          message: '删除成功!'
-        });
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });
+        let data = Object.assign({}, row)
+        data.status = status
+        updateAdminUser(data).then((res) => {
+          this.$message({
+            type: 'success',
+            message: `操作成功!`
+          });
+          this.changeList(data)
+        }).catch(() => {
+          this.$message({
+            type: 'error',
+            message: `操作失败!`
+          });
+        })
       });
     }
   }
