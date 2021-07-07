@@ -1,5 +1,14 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+      <el-input v-model="listQuery.filters.keyword" placeholder="keyword" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-button v-waves class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="handleFilter">
+        搜索
+      </el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+        新增
+      </el-button>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -20,7 +29,7 @@
       </el-table-column>
       <el-table-column label="类别" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.type }}</span>
+          <span>{{ replyType.getName(scope.row.type) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="内容" align="center">
@@ -38,26 +47,33 @@
           <span>{{ scope.row.updated_at }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
+        <template slot-scope="{row,$index}">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            编辑
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="handleGetList" />
+    <ReplyDialog
+      :reply-dialog-visible="replyDialogVisible"
+      :reply="currentReply"
+      @hiddenReplyDialogVisible="hiddenReplyDialogVisible"
+      @changeList="changeList"
+    ></ReplyDialog>
   </div>
 </template>
 
 <script>
-import { getList } from '@/api/reply'
+import { getReplies } from '@/api/reply'
 import Pagination from '@/components/Pagination'
+import replyType from "@/constants/replyType"
+import ReplyDialog from './replyDialog'
 
 export default {
-  components: { Pagination },
+  components: { Pagination, ReplyDialog },
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
   },
   data() {
     return {
@@ -68,8 +84,12 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        sort: '+id'
+        sort: '+id',
+        filters: {}
       },
+      replyType: replyType,
+      replyDialogVisible: false,
+      currentReply: {}
     }
   },
   created() {
@@ -78,12 +98,35 @@ export default {
   methods: {
     handleGetList() {
       this.listLoading = true
-      getList(this.listQuery).then(response => {
+      getReplies(this.listQuery).then(response => {
         const data = response.data
         this.list = data.data
         this.total = data.total
         this.listLoading = false
       })
+    },
+    hiddenReplyDialogVisible() {
+      this.replyDialogVisible = false
+    },
+    changeList(data, mode = 'update') {
+      if (mode === 'add') {
+        this.handleGetList()
+      } else {
+        const index = this.list.findIndex(v => v.id === data.id)
+        this.list.splice(index, 1, data)
+      }
+    },
+    handleUpdate(row) {
+      this.currentReply = row
+      this.replyDialogVisible = true
+    },
+    handleCreate() {
+      this.currentReply = {}
+      this.replyDialogVisible = true
+    },
+    handleFilter() {
+      this.listQuery.page = 1
+      this.handleGetList()
     },
   }
 }

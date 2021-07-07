@@ -1,5 +1,14 @@
 <template>
   <div class="app-container">
+    <div class="filter-container">
+      <el-input v-model="listQuery.filters.username" placeholder="username" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-button v-waves class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-search" @click="handleFilter">
+        搜索
+      </el-button>
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+        新增
+      </el-button>
+    </div>
     <el-table
       v-loading="listLoading"
       :data="list"
@@ -48,23 +57,23 @@
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="handleGetList" />
-    <UpdateAdminUserDialog
-        :update-admin-user-dialog-visible="updateAdminUserDialogVisible"
-        @hiddenUpdateAdminUserDialogVisible="hiddenUpdateAdminUserDialogVisible"
+    <AdminUserDialog
+        :admin-user-dialog-visible="adminUserDialogVisible"
         :admin-user="currentAdminUser"
+        @hiddenAdminUserDialogVisible="hiddenAdminUserDialogVisible"
         @changeList="changeList"
-    ></UpdateAdminUserDialog>
+    ></AdminUserDialog>
   </div>
 </template>
 
 <script>
   import {getAdminUsers, updateAdminUser} from '@/api/adminUser'
 import Pagination from '@/components/Pagination'
-import UpdateAdminUserDialog from './updateAdminUserDialog'
+import AdminUserDialog from './adminUserDialog'
 import adminUserStatus from "@/constants/adminUserStatus";
 
 export default {
-  components: { Pagination, UpdateAdminUserDialog },
+  components: { Pagination, AdminUserDialog },
   filters: {
     statusFilter(status) {
       return adminUserStatus.getButton(status)
@@ -79,10 +88,11 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        sort: '+id'
+        sort: '+id',
+        filters: {}
       },
       currentAdminUser: {},
-      updateAdminUserDialogVisible: false,
+      adminUserDialogVisible: false,
       adminUserStatus: adminUserStatus
     }
   },
@@ -100,24 +110,25 @@ export default {
       })
     },
     handleUpdate(row) {
-      console.log(row)
       this.currentAdminUser = row
-      this.updateAdminUserDialogVisible = true
+      this.adminUserDialogVisible = true
     },
-    hiddenUpdateAdminUserDialogVisible() {
-      this.updateAdminUserDialogVisible = false
+    handleCreate() {
+      this.currentAdminUser = {}
+      this.adminUserDialogVisible = true
+    },
+    hiddenAdminUserDialogVisible() {
+      this.adminUserDialogVisible = false
     },
     changeList(data, mode = 'update') {
       if (mode === 'add') {
-        this.list.unshift(data)
+        this.handleGetList()
       } else {
         const index = this.list.findIndex(v => v.id === data.id)
         this.list.splice(index, 1, data)
       }
     },
     handleStatus(row, status) {
-      console.log(status)
-
       this.$confirm(`此操作将${adminUserStatus.getName(status)}该用户, 是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -138,7 +149,11 @@ export default {
           });
         })
       });
-    }
+    },
+    handleFilter() {
+      this.listQuery.page = 1
+      this.handleGetList()
+    },
   }
 }
 </script>
