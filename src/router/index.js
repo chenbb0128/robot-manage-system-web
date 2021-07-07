@@ -87,6 +87,25 @@ export const constantRoutes = [
       }
     ]
   }, {
+    path: '/material',
+    component: Layout,
+    redirect: '/material/text',
+    name: 'Text',
+    meta: { title: '素材库', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'test',
+        name: 'Text',
+        component: () => import('@/views/material/text'),
+        meta: { title: '文本', icon: 'table' }
+      }, {
+        path: 'image',
+        name: 'Image',
+        component: () => import('@/views/material/image'),
+        meta: { title: '图片', icon: 'table' }
+      }
+    ]
+  }, {
     path: '/order',
     component: Layout,
     redirect: '/order/tbOrder',
