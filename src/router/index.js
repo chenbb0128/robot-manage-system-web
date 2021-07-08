@@ -80,9 +80,9 @@ export const constantRoutes = [
         component: () => import('@/views/reply/index'),
         meta: { title: '关键字回复', icon: 'table' }
       }, {
-        path: 'crontab',
-        name: 'Crontab',
-        component: () => import('@/views/reply/index'),
+        path: 'schedule',
+        name: 'Schedule',
+        component: () => import('@/views/schedule/index'),
         meta: { title: '定时任务', icon: 'table' }
       }
     ]
