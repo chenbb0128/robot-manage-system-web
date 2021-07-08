@@ -20,7 +20,12 @@
       </el-table-column>
       <el-table-column label="内容">
         <template slot-scope="scope">
-          {{ scope.row.value }}
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="scope.row.image.url"
+            :preview-src-list="[scope.row.image.url]"
+          >
+          </el-image>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="创建时间" width="200">
@@ -57,6 +62,10 @@
           limit: 10,
           sort: '+id',
         },
+        srcList: [
+          'https://fuss10.elemecdn.com/8/27/f01c15bb73e1ef3793e64e6b7bbccjpeg.jpeg',
+          'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
+        ]
       }
     },
     created() {

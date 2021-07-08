@@ -27,14 +27,16 @@
           {{ scope.row.keyword }}
         </template>
       </el-table-column>
-      <el-table-column label="类别" width="110" align="center">
+      <el-table-column label="匹配规则" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ replyType.getName(scope.row.type) }}</span>
+          <span>{{ matchType[scope.row.match_type] }}</span>
         </template>
       </el-table-column>
       <el-table-column label="内容" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.content }}</span>
+          <span v-for="item in scope.row.materials">
+            <el-tag style="margin-left: 10px;">{{materialType[item.type]}}-{{ item.value }}</el-tag>
+          </span>
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="创建时间" width="200">
@@ -87,6 +89,8 @@ export default {
         sort: '+id',
         filters: {}
       },
+      matchType: ['精确匹配', '模糊匹配'],
+      materialType: ['文本', '图片'],
       replyType: replyType,
       replyDialogVisible: false,
       currentReply: {}
