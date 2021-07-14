@@ -90,7 +90,6 @@ export default {
         sort: '+id',
         filters: {}
       },
-      matchType: ['精确匹配', '模糊匹配'],
       materialType: ['文本', '图片'],
       replyType: replyType,
       replyDialogVisible: false,

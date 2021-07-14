@@ -94,7 +94,7 @@ export const constantRoutes = [
     meta: { title: '素材库', icon: 'el-icon-s-help' },
     children: [
       {
-        path: 'test',
+        path: 'text',
         name: 'Text',
         component: () => import('@/views/material/text'),
         meta: { title: '文本', icon: 'table' }
