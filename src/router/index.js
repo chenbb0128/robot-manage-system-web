@@ -117,6 +117,11 @@ export const constantRoutes = [
         name: 'TbOrder',
         component: () => import('@/views/tbOrder/index'),
         meta: { title: '淘宝订单管理', icon: 'table' }
+      }, {
+        path: 'jdOrder',
+        name: 'JdOrder',
+        component: () => import('@/views/tbOrder/index'),
+        meta: { title: '京东订单管理', icon: 'table' }
       }
     ]
   }, {

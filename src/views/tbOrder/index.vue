@@ -13,46 +13,118 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="用户名">
+      <el-table-column label="订单号">
         <template slot-scope="scope">
-          {{ scope.row.username }}
+          {{ scope.row.order_no }}
         </template>
       </el-table-column>
-      <el-table-column label="Email" width="110" align="center">
+      <el-table-column label="子订单号" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.email }}</span>
+          {{ scope.row.sub_order_no }}
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="Status" width="110" align="center">
+      <el-table-column label="商品名称" width="110" align="center">
         <template slot-scope="scope">
-          <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag>
+          {{ scope.row.goods_name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="Display_time" width="200">
+      <el-table-column align="center" label="订单类别" width="200">
         <template slot-scope="scope">
-          <span>{{ scope.row.created_at }}</span>
+          {{ scope.row.order_type }}
         </template>
       </el-table-column>
+      <el-table-column align="center" label="订单状态" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.order_status }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="结算状态" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.settle_account_status }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="订单创建时间" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.order_created_at }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="支付时间" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.payment_at }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="淘宝支付时间" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.tb_payment_at }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="支付金额" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.payment_money }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="结算金额" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.settle_account_money }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="淘宝结算时间" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.tb_settle_at }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="服务费" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.service_money }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="服务费" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.service_money }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="佣金比率" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.commission_rate }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="付款预估收入" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.pre_payment_income }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="结算预估收入" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.pre_settle_account_income }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="是否维权" width="200">
+        <template slot-scope="scope">
+          {{ scope.row.rights_protection }}
+        </template>
+      </el-table-column>
+<!--      <el-table-column align="center" label="提现状态" width="200">-->
+<!--        <template slot-scope="scope">-->
+<!--          {{ scope.row.user_order_map.draw_money_status || 0 }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column align="center" label="提现金额" width="200">-->
+<!--        <template slot-scope="scope">-->
+<!--          {{ scope.row.user_order_map.draw_money || 0 }}-->
+<!--        </template>-->
+<!--      </el-table-column>-->
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="handleGetList" />
   </div>
 </template>
 
 <script>
-import { getAdminUsers } from '@/api/adminUser'
+import { getTbOrders } from '@/api/order'
 import Pagination from '@/components/Pagination'
 
 export default {
   components: { Pagination },
   filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: 'success',
-        draft: 'gray',
-        deleted: 'danger'
-      }
-      return statusMap[status]
-    }
   },
   data() {
     return {
@@ -73,7 +145,7 @@ export default {
   methods: {
     handleGetList() {
       this.listLoading = true
-      getAdminUsers(this.listQuery).then(response => {
+      getTbOrders(this.listQuery).then(response => {
         const data = response.data
         this.list = data.data
         this.total = data.total
@@ -86,7 +158,6 @@ export default {
     handleCurrentChange() {
 
     },
-
   }
 }
 </script>
