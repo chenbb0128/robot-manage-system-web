@@ -13,24 +13,19 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="订单号" width="180" align="center">
+      <el-table-column label="订单号" width="160" align="center">
         <template slot-scope="scope">
           {{ scope.row.order_no }}
         </template>
       </el-table-column>
-      <el-table-column label="子订单号" width="180" align="center">
+      <el-table-column label="父订单号" width="160" align="center">
         <template slot-scope="scope">
-          {{ scope.row.sub_order_no }}
+          {{ scope.row.sup_order_no }}
         </template>
       </el-table-column>
-      <el-table-column label="商品名称" width="200" align="center">
+      <el-table-column label="商品名称" width="220" align="center">
         <template slot-scope="scope">
           {{ scope.row.goods_name }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="订单类别" width="100">
-        <template slot-scope="scope">
-          {{ scope.row.order_type }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="订单状态" width="100">
@@ -38,9 +33,19 @@
           {{ scope.row.order_status }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="结算状态" width="80">
+      <el-table-column align="center" label="商品数量" width="80">
         <template slot-scope="scope">
-          {{ scope.row.settle_account_status }}
+          {{ scope.row.goods_count }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="商品售后中数量" width="130">
+        <template slot-scope="scope">
+          {{ scope.row.goods_frozen_count }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="商品已退货数量" width="130">
+        <template slot-scope="scope">
+          {{ scope.row.goods_return_count }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="订单创建时间" width="180">
@@ -48,69 +53,64 @@
           {{ scope.row.order_created_at }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="支付时间" width="180">
+      <el-table-column align="center" label="订单完成时间" width="180">
         <template slot-scope="scope">
-          {{ scope.row.payment_at }}
+          {{ scope.row.order_finish_at }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="淘宝支付时间" width="180">
+      <el-table-column align="center" label="订单更新时间" width="180">
         <template slot-scope="scope">
-          {{ scope.row.tb_payment_at }}
+          {{ scope.row.order_update_at }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="支付金额" width="80">
+      <el-table-column align="center" label="付款金额" width="80">
         <template slot-scope="scope">
           {{ scope.row.payment_money }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="结算金额" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.settle_account_money }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="淘宝结算时间" width="180">
-        <template slot-scope="scope">
-          {{ scope.row.tb_settle_at }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="服务费" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.service_money }}
-        </template>
-      </el-table-column>
-      <el-table-column align="center" label="服务费" width="80">
-        <template slot-scope="scope">
-          {{ scope.row.service_money }}
-        </template>
-      </el-table-column>
       <el-table-column align="center" label="佣金比率" width="80">
         <template slot-scope="scope">
-          {{ scope.row.commission_rate }}%
+          {{ scope.row.commission_rate }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="付款预估收入" width="120">
+      <el-table-column align="center" label="分成比率" width="80">
         <template slot-scope="scope">
-          {{ scope.row.pre_payment_income }}
+          {{ scope.row.subside_rate }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="结算预估收入" width="120">
+      <el-table-column align="center" label="补贴比率" width="80">
         <template slot-scope="scope">
-          {{ scope.row.pre_settle_account_income }}
+          {{ scope.row.subsidy_rate }}%
         </template>
       </el-table-column>
-      <el-table-column align="center" label="是否维权" width="80">
+      <el-table-column align="center" label="最终分佣比率" width="120">
         <template slot-scope="scope">
-          {{ scope.row.rights_protection }}
+          {{ scope.row.final_rate }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="提现状态" width="80">
+      <el-table-column align="center" label="预估计佣金额" width="120">
         <template slot-scope="scope">
-          {{ scope.row.user_order_map ? scope.row.user_order_map.draw_money_status : '' }}
+          {{ scope.row.estimate_cos_price }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="提现金额" width="80">
+      <el-table-column align="center" label="预估佣金" width="80">
         <template slot-scope="scope">
-          {{ scope.row.user_order_map ? scope.row.user_order_map.draw_money : '' }}
+          {{ scope.row.estimate_fee }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="实际计佣金额" width="120">
+        <template slot-scope="scope">
+          {{ scope.row.actual_cos_price }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="实际佣金" width="80">
+        <template slot-scope="scope">
+          {{ scope.row.actual_fee }}
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="京东结算日期" width="180">
+        <template slot-scope="scope">
+          {{ scope.row.jd_settle_at }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="操作" width="180" fixed="right">
@@ -129,7 +129,7 @@
 </template>
 
 <script>
-import { getTbOrders } from '@/api/order'
+import { getJdOrders } from '@/api/order'
 import Pagination from '@/components/Pagination'
 
 export default {
@@ -155,7 +155,7 @@ export default {
   methods: {
     handleGetList() {
       this.listLoading = true
-      getTbOrders(this.listQuery).then(response => {
+      getJdOrders(this.listQuery).then(response => {
         const data = response.data
         this.list = data.data
         this.total = data.total
@@ -168,6 +168,7 @@ export default {
     handleCurrentChange() {
 
     },
+
   }
 }
 </script>
