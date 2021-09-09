@@ -36,7 +36,8 @@
       <el-table-column label="素材" align="center">
         <template slot-scope="scope">
           <span v-for="item in scope.row.materials">
-            <el-tag style="margin-left: 10px;">{{materialType[item.type]}}-{{ item.value }}</el-tag>
+            <el-tag style="margin-left: 10px;" v-if="item.type === materialType.IMAGE">{{materialType.getName(item.type)}}</el-tag>
+            <el-tag style="margin-left: 10px;" v-else>{{materialType.getName(item.type)}}-{{ item.value.substring(0, 5) }}...</el-tag>
           </span>
         </template>
       </el-table-column>
@@ -59,23 +60,23 @@
       </el-table-column>
     </el-table>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="handleGetList" />
-    <ReplyDialog
+    <EditScheduleDialog
       :reply-dialog-visible="replyDialogVisible"
       :reply="currentReply"
-      @hiddenReplyDialogVisible="hiddenReplyDialogVisible"
+      @hiddenEditScheduleDialogVisible="hiddenEditScheduleDialogVisible"
       @changeList="changeList"
-    ></ReplyDialog>
+    ></EditScheduleDialog>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/Pagination'
-import replyType from "@/constants/replyType"
-import ReplyDialog from './replyDialog'
+import materialType from "@/constants/materialType"
+import EditScheduleDialog from './editScheduleDialog'
 import {getSchedules} from "@/api/schedule";
 
 export default {
-  components: { Pagination, ReplyDialog },
+  components: { Pagination, EditScheduleDialog },
   filters: {
   },
   data() {
@@ -90,8 +91,7 @@ export default {
         sort: '+id',
         filters: {}
       },
-      materialType: ['文本', '图片'],
-      replyType: replyType,
+      materialType: materialType,
       replyDialogVisible: false,
       currentReply: {}
     }
@@ -109,8 +109,8 @@ export default {
         this.listLoading = false
       })
     },
-    hiddenReplyDialogVisible() {
-      this.replyDialogVisible = false
+    hiddenEditScheduleDialogVisible() {
+      this.editScheduleDialogVisible = false
     },
     changeList(data, mode = 'update') {
       if (mode === 'add') {
@@ -122,11 +122,11 @@ export default {
     },
     handleUpdate(row) {
       this.currentReply = row
-      this.replyDialogVisible = true
+      this.editScheduleDialogVisible = true
     },
     handleCreate() {
       this.currentReply = {}
-      this.replyDialogVisible = true
+      this.editScheduleDialogVisible = true
     },
     handleFilter() {
       this.listQuery.page = 1

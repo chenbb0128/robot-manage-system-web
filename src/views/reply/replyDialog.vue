@@ -4,16 +4,26 @@
     :visible.sync="visible"
     :destroy-on-close="true"
   >
-    <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
+    <el-form ref="dataForm" :rules="rules" :model="form" label-position="left" label-width="100px" style="width: 400px; margin-left:50px;">
       <el-form-item label="关键词" prop="keyword">
         <el-input v-model="form.keyword" />
       </el-form-item>
       <el-form-item label="类别" prop="type">
         <el-select v-model="form.type" class="filter-item" placeholder="请选择">
           <el-option
-            v-for="item in replyType.values()"
+            v-for="item in materialType.values()"
             :key="item"
-            :label="replyType.getName(item)"
+            :label="materialType.getName(item)"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="匹配规则" prop="match_type">
+        <el-select v-model="form.match_type" class="filter-item" placeholder="请选择">
+          <el-option
+            v-for="item in matchType.values()"
+            :key="item"
+            :label="matchType.getName(item)"
             :value="item"
           />
         </el-select>
@@ -34,7 +44,8 @@
 </template>
 <script>
   import {createReply, updateReply} from "@/api/reply";
-  import replyType from '@/constants/replyType';
+  import materialType from '@/constants/materialType';
+  import matchType from "@/constants/matchType";
 
   export default {
     props: {
@@ -56,8 +67,10 @@
           keyword: [{ required: true, message: '请输入关键词', trigger: 'change' }],
           content: [{ required: true, message: '请输入内容', trigger: 'change' }],
           type: [{ required: true, message: '请选择类别', trigger: 'change' }],
+          match_type: [{ required: true, message: '请选择匹配规则', trigger: 'change' }],
         },
-        replyType: replyType
+        materialType: materialType,
+        matchType: matchType
       }
     },
     watch: {

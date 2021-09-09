@@ -84,7 +84,13 @@ export const constantRoutes = [
         name: 'Schedule',
         component: () => import('@/views/schedule/index'),
         meta: { title: '定时任务', icon: 'table' }
-      }
+      }, {
+        path: 'reply/editReply/:id(\\d+)',
+        component: () => import('@/views/reply/editReply'),
+        name: 'EditReply',
+        meta: { title: '编辑关键字回复', noCache: true, activeMenu: '/robot/reply' },
+        hidden: true
+      },
     ]
   }, {
     path: '/material',

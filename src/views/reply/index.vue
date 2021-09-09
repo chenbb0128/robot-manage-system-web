@@ -29,13 +29,14 @@
       </el-table-column>
       <el-table-column label="匹配规则" width="110" align="center">
         <template slot-scope="scope">
-          <span>{{ matchType[scope.row.match_type] }}</span>
+          <span>{{ matchType.getName(scope.row.match_type) }}</span>
         </template>
       </el-table-column>
       <el-table-column label="内容" align="center">
         <template slot-scope="scope">
           <span v-for="item in scope.row.materials">
-            <el-tag style="margin-left: 10px;">{{materialType[item.type]}}-{{ item.value }}</el-tag>
+            <el-tag style="margin-left: 10px;" v-if="item.type === materialType.IMAGE">{{materialType.getName(item.type)}}</el-tag>
+            <el-tag style="margin-left: 10px;" v-else>{{materialType.getName(item.type)}}-{{ item.value.substring(0, 5) }}...</el-tag>
           </span>
         </template>
       </el-table-column>
@@ -51,9 +52,11 @@
       </el-table-column>
       <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row,$index}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
+          <router-link :to="'/robot/reply/editReply/' + row.id">
+            <el-button type="primary" size="mini" @click="handleUpdate(row)">
+              编辑
+            </el-button>
+          </router-link>
         </template>
       </el-table-column>
     </el-table>
@@ -70,11 +73,14 @@
 <script>
 import { getReplies } from '@/api/reply'
 import Pagination from '@/components/Pagination'
-import replyType from "@/constants/replyType"
+import materialType from "@/constants/materialType"
 import ReplyDialog from './replyDialog'
+import matchType from "@/constants/matchType"
+import waves from '@/directive/waves'
 
 export default {
   components: { Pagination, ReplyDialog },
+  directives: { waves },
   filters: {
   },
   data() {
@@ -89,9 +95,8 @@ export default {
         sort: '+id',
         filters: {}
       },
-      matchType: ['精确匹配', '模糊匹配'],
-      materialType: ['文本', '图片'],
-      replyType: replyType,
+      matchType: matchType,
+      materialType: materialType,
       replyDialogVisible: false,
       currentReply: {}
     }

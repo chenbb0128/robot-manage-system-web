@@ -1,4 +1,4 @@
-const replyType = {
+const materialType = {
   TEXT: 0,
   IMAGE: 1,
   getName: (value) => {
@@ -6,8 +6,8 @@ const replyType = {
     return map[value] || null
   },
   values: () => {
-    return [replyType.TEXT, replyType.IMAGE]
+    return [materialType.TEXT, materialType.IMAGE]
   }
 }
 
-export default replyType
+export default materialType

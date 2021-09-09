@@ -34,7 +34,7 @@
 </template>
 <script>
   import {createReply, updateReply} from "@/api/reply";
-  import replyType from '@/constants/replyType';
+  import materialType from '@/constants/materialType';
 
   export default {
     props: {
@@ -57,7 +57,7 @@
           content: [{ required: true, message: '请输入内容', trigger: 'change' }],
           type: [{ required: true, message: '请选择类别', trigger: 'change' }],
         },
-        replyType: replyType
+        replyType: materialType
       }
     },
     watch: {

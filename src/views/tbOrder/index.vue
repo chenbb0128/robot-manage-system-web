@@ -35,12 +35,14 @@
       </el-table-column>
       <el-table-column align="center" label="订单状态" width="100">
         <template slot-scope="scope">
-          {{ scope.row.order_status }}
+          <el-tag :type="tbOrderStatus.getColor(scope.row.order_status)">
+            {{ tbOrderStatus.getName(scope.row.order_status) }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="结算状态" width="80">
         <template slot-scope="scope">
-          {{ scope.row.settle_account_status }}
+          {{ scope.row.settle_account_status ? '已结算' : '未结算' }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="订单创建时间" width="180">
@@ -100,12 +102,12 @@
       </el-table-column>
       <el-table-column align="center" label="是否维权" width="80">
         <template slot-scope="scope">
-          {{ scope.row.rights_protection }}
+          {{ scope.row.rights_protection ? '是' : '否' }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="提现状态" width="80">
         <template slot-scope="scope">
-          {{ scope.row.user_order_map ? scope.row.user_order_map.draw_money_status : '' }}
+          {{ scope.row.user_order_map ? orderMoneyExtractStatus.getName(scope.row.user_order_map.draw_money_status) : '' }}
         </template>
       </el-table-column>
       <el-table-column align="center" label="提现金额" width="80">
@@ -131,9 +133,11 @@
 <script>
 import { getTbOrders } from '@/api/order'
 import Pagination from '@/components/Pagination'
+import tbOrderStatus from "@/constants/tbOrderStatus";
+import orderMoneyExtractStatus from "@/constants/orderMoneyExtractStatus";
 
 export default {
-  components: { Pagination },
+  components: { Pagination, tbOrderStatus, orderMoneyExtractStatus },
   filters: {
   },
   data() {
@@ -147,6 +151,8 @@ export default {
         limit: 10,
         sort: '+id'
       },
+      tbOrderStatus: tbOrderStatus,
+      orderMoneyExtractStatus: orderMoneyExtractStatus
     }
   },
   created() {

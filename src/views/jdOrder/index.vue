@@ -28,9 +28,11 @@
           {{ scope.row.goods_name }}
         </template>
       </el-table-column>
-      <el-table-column align="center" label="订单状态" width="100">
+      <el-table-column align="center" label="订单状态" width="200">
         <template slot-scope="scope">
-          {{ scope.row.order_status }}
+          <el-tag :type="jdOrderStatus.getColor(scope.row.order_status)">
+            {{ jdOrderStatus.getName(scope.row.order_status) }}
+          </el-tag>
         </template>
       </el-table-column>
       <el-table-column align="center" label="商品数量" width="80">
@@ -131,6 +133,7 @@
 <script>
 import { getJdOrders } from '@/api/order'
 import Pagination from '@/components/Pagination'
+import jdOrderStatus from "@/constants/jdOrderStatus";
 
 export default {
   components: { Pagination },
@@ -147,6 +150,7 @@ export default {
         limit: 10,
         sort: '+id'
       },
+      jdOrderStatus: jdOrderStatus
     }
   },
   created() {
