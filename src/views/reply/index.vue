@@ -22,9 +22,11 @@
           {{ scope.row.id }}
         </template>
       </el-table-column>
-      <el-table-column label="关键字" width="110">
+      <el-table-column label="关键字">
         <template slot-scope="scope">
-          {{ scope.row.keyword }}
+          <span v-for="item in scope.row.keywords">
+            <el-tag style="margin-left: 10px;">{{item.keyword}}</el-tag>
+          </span>
         </template>
       </el-table-column>
       <el-table-column label="匹配规则" width="110" align="center">
@@ -40,12 +42,12 @@
           </span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="创建时间" width="200">
+      <el-table-column align="center" prop="created_at" label="创建时间" width="180">
         <template slot-scope="scope">
           <span>{{ scope.row.created_at }}</span>
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="更新时间" width="200">
+      <el-table-column align="center" prop="created_at" label="更新时间" width="180">
         <template slot-scope="scope">
           <span>{{ scope.row.updated_at }}</span>
         </template>

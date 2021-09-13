@@ -8,6 +8,13 @@ export function getReplies(params) {
   })
 }
 
+export function getReply(replyId) {
+  return request({
+    url: `/reply/${replyId}`,
+    method: 'get'
+  })
+}
+
 export function updateReply(data) {
   return request({
     url: `/reply/${data.id}`,

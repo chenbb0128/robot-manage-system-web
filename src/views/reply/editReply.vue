@@ -1,11 +1,23 @@
 <template>
   <div class="app-container">
-    123123
+    <el-row>
+      <el-col :span="24">123213</el-col>
+    </el-row>
+    <el-row>
+      <el-col :span="12">123213</el-col>
+      <el-col :span="12">123123</el-col>
+    </el-row>
+    <el-row :gutter="20">
+      <el-col :span="8">2131</el-col>
+      <el-col :span="8">2131</el-col>
+      <el-col :span="4">2131</el-col>
+      <el-col :span="4">2131</el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import { getReplies } from '@/api/reply'
+import { getReply } from '@/api/reply'
 
 export default {
   components: { },
@@ -13,6 +25,7 @@ export default {
   },
   data() {
     return {
+      replyId: this.$route.params && this.$route.params.id
     }
   },
   created() {
@@ -21,10 +34,9 @@ export default {
   methods: {
     handleGetList() {
       this.listLoading = true
-      getReplies(this.listQuery).then(response => {
+      getReply(this.replyId).then(response => {
         const data = response.data
-        this.list = data.data
-        this.total = data.total
+        console.log(response)
         this.listLoading = false
       })
     },
