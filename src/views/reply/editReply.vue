@@ -16,15 +16,7 @@
         </el-radio-group>
       </el-form-item>
       <el-form-item label="回复内容">
-        <el-tag
-          :key="material.id"
-          v-for="material in materials"
-          closable
-          :disable-transitions="false"
-          @close="">
-          {{material.type === materialType.IMAGE ? materialType.getName(material.type) : materialType.getName(material.type)}}-{{ material.value.substring(0, 5) }}
-        </el-tag>
-        <el-button class="button-new-tag" size="small">+ 选择素材</el-button>
+        <material-tag :materials="materials"></material-tag>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitReply()">立即创建</el-button>
@@ -35,11 +27,12 @@
 
 <script>
 import { getReply } from '@/api/reply'
-import keywordTag from "@/views/reply/components/keywordTag";
+import keywordTag from "@/views/reply/components/keywordTag"
 import materialType from "@/constants/materialType"
+import materialTag from "@/views/reply/components/materialTag"
 
 export default {
-  components: { keywordTag },
+  components: { keywordTag, materialTag },
   data() {
     return {
       replyId: this.$route.params && this.$route.params.id,

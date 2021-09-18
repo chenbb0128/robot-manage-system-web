@@ -8,75 +8,97 @@
       @close="">
       {{material.type === materialType.IMAGE ? materialType.getName(material.type) : materialType.getName(material.type)}}-{{ material.value.substring(0, 5) }}
     </el-tag>
-    <el-button class="button-new-tag" size="small">+ 选择素材</el-button>
+    <el-button class="button-new-tag" size="small" @click="handleSelectMaterial">+ 选择素材</el-button>
     <el-dialog
-      :title="123"
+      title="123"
       :visible.sync="visible"
       :destroy-on-close="true"
     >
-      123123
+      <el-table
+        v-loading="materialListLoading"
+        :data="list"
+        element-loading-text="Loading"
+        border
+        fit
+        highlight-current-row
+      >
+        <el-table-column align="center" label="ID" width="95">
+          <template slot-scope="scope">
+            {{ scope.row.id }}
+          </template>
+        </el-table-column>
+        <el-table-column label="内容">
+          <template slot-scope="scope">
+            {{ scope.row.value }}
+          </template>
+        </el-table-column>
+      </el-table>
+      <pagination v-show="total>0" :total="total" :page.sync="materialListQuery.page" :limit.sync="materialListQuery.limit" @pagination="handleGetMaterialList" />
     </el-dialog>
   </div>
 </template>
 
 <script>
-  export default {
-    props: {
-      keywords: {
-        type: Array,
-        default: function () {
-          return []
-        }
-      },
-      handleChangeKeywords: Function,
+import materialType from "@/constants/materialType"
+import { getTexts, getImages} from "@/api/material";
+
+export default {
+  props: {
+    materials: {
+      type: Array,
+      default: function () {
+        return []
+      }
     },
-    data() {
-      return {
-        inputVisible: false,
-        inputValue: '',
-        visible: false
-      };
+  },
+  data() {
+    return {
+      visible: false,
+      materialList: null,
+      materialListLoading: true,
+      materialType: materialType,
+      selectMaterialType: materialType.TEXT,
+      total: 0,
+      // list params
+      materialListQuery: {
+        page: 1,
+        limit: 10,
+        sort: '+id',
+      },
+    };
+  },
+  methods: {
+    handleClose(keyword) {
+
     },
-    methods: {
-      handleClose(keyword) {
-        this.keywords.splice(this.keywords.indexOf(keyword), 1);
-        console.log(this.keywords)
-        this.$emit('handleChangeKeywords', this.keywords)
-      },
-      showInput() {
-        this.inputVisible = true;
-        this.$nextTick(_ => {
-          this.$refs.saveTagInput.$refs.input.focus();
-        });
-      },
-      handleInputConfirm() {
-        let inputValue = this.inputValue;
-        if (inputValue) {
-          let status = true
-          for (let k in this.keywords) {
-            let keyword = this.keywords[k]
-            if (keyword.keyword === inputValue) {
-              status = false
-              break
-            }
-          }
-          if (status) {
-            this.keywords.push({
-              'keyword': inputValue,
-            });
-            this.$emit('handleChangeKeywords', this.keywords)
-          } else {
-            this.$message({
-              message: '请勿添加重复关键词',
-              type: 'warning'
-            });
-          }
-        }
-        this.inputVisible = false;
-        this.inputValue = '';
+    handleSelectMaterial() {
+      this.visible = true
+    },
+    handleInputConfirm() {
+
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+    handleGetMaterialList() {
+      if (this.selectMaterialType === materialType.TEXT) {
+        getTexts(this.materialListQuery).then(response => {
+          const data = response.data
+          this.list = data.data
+          this.total = data.total
+          this.listLoading = false
+        })
+      } else if (this.selectMaterialType === materialType.IMAGE) {
+        getImages(this.materialListQuery).then(response => {
+          const data = response.data
+          this.list = data.data
+          this.total = data.total
+          this.listLoading = false
+        })
       }
     }
   }
+}
 </script>
 
 <style>
