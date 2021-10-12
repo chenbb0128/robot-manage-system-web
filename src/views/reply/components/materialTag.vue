@@ -9,40 +9,16 @@
       {{material.type === materialType.IMAGE ? materialType.getName(material.type) : materialType.getName(material.type)}}-{{ material.value.substring(0, 5) }}
     </el-tag>
     <el-button class="button-new-tag" size="small" @click="handleSelectMaterial">+ 选择素材</el-button>
-    <el-dialog
-      title="123"
-      :visible.sync="visible"
-      :destroy-on-close="true"
-    >
-      <el-table
-        v-loading="materialListLoading"
-        :data="list"
-        element-loading-text="Loading"
-        border
-        fit
-        highlight-current-row
-      >
-        <el-table-column align="center" label="ID" width="95">
-          <template slot-scope="scope">
-            {{ scope.row.id }}
-          </template>
-        </el-table-column>
-        <el-table-column label="内容">
-          <template slot-scope="scope">
-            {{ scope.row.value }}
-          </template>
-        </el-table-column>
-      </el-table>
-      <pagination v-show="total>0" :total="total" :page.sync="materialListQuery.page" :limit.sync="materialListQuery.limit" @pagination="handleGetMaterialList" />
-    </el-dialog>
+    <material-dialog :visible.sync="materialDialogVisible" :materials="materials"></material-dialog>
   </div>
 </template>
 
 <script>
 import materialType from "@/constants/materialType"
-import { getTexts, getImages} from "@/api/material";
+import materialDialog from "@/views/reply/components/materialDialog";
 
 export default {
+  components: { materialDialog },
   props: {
     materials: {
       type: Array,
@@ -53,18 +29,8 @@ export default {
   },
   data() {
     return {
-      visible: false,
-      materialList: null,
-      materialListLoading: true,
+      materialDialogVisible: false,
       materialType: materialType,
-      selectMaterialType: materialType.TEXT,
-      total: 0,
-      // list params
-      materialListQuery: {
-        page: 1,
-        limit: 10,
-        sort: '+id',
-      },
     };
   },
   methods: {
@@ -72,7 +38,7 @@ export default {
 
     },
     handleSelectMaterial() {
-      this.visible = true
+      this.materialDialogVisible = true
     },
     handleInputConfirm() {
 
@@ -80,23 +46,7 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    handleGetMaterialList() {
-      if (this.selectMaterialType === materialType.TEXT) {
-        getTexts(this.materialListQuery).then(response => {
-          const data = response.data
-          this.list = data.data
-          this.total = data.total
-          this.listLoading = false
-        })
-      } else if (this.selectMaterialType === materialType.IMAGE) {
-        getImages(this.materialListQuery).then(response => {
-          const data = response.data
-          this.list = data.data
-          this.total = data.total
-          this.listLoading = false
-        })
-      }
-    }
+
   }
 }
 </script>
